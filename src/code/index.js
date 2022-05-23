@@ -9,9 +9,11 @@ const LOAD_SLASH = process.argv[2] == "load"
 const commands = [];
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
-const clientId = '978298230196568114';
+const CLIENT_ID = '978298230196568114';
 
-const client = new Discord.Client()
+const client = new Discord.Client({
+	intents: ["GUILDS"]
+})
 
 client.slashcommands = new Discord.Collection()
 
@@ -23,8 +25,8 @@ for (const file of commandFiles) {
 
 if (LOAD_SLASH) {
     const rest = new REST({ version: "9" }).setToken(TOKEN)
-    console.log("Successfully reloaded application (/) commands.")
-    rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {body: commands})
+    console.log("Started refreshing application (/) commands.")
+    rest.put(Routes.applicationGuildCommands(CLIENT_ID, "900712260937322526"), {body: commands})
     .then(() => {
         console.log("Successfully reloaded application (/) commands.")
         process.exit(0)
@@ -47,7 +49,6 @@ else {
             const command = client.slashcommands.get(interaction.commandName)
             if (!command) interaction.reply("Not a valid slash command")
 
-            await interaction.deferReply()
             await command.run({ client, interaction })
         }
         handleCommand()
