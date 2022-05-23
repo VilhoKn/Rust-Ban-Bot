@@ -8,7 +8,12 @@ module.exports = {
 		const embed = new MessageEmbed()
 
 		const desc = `This bot is an unofficial bot that posts rust\n bans from the Rust Hack Report twitter account`
-		const commandsDecs = '`/help`	Displays this message\n`/`	'
+		const commandsDesc = '`/help`	Displays this message\n`/channel`	Set the channel to send bans\n`/status`   Turn the bans ON or OFF\n`/track`   Get alerted when a spesific player gets banned'
+		let statusDesc = 1 ? '<:ON:978364950340853901> : `Status ON`\n' : '<:OFF:978364973065580604> : `Status OFF`\n';
+		let channelsDesc = 1 ? '<:ON:978364950340853901> : `Channel `' + "``" +'\n' : '<:OFF:978364973065580604> : `No channel set`\n';
+		let trackingDesc = 1 ? '<:ON:978364950340853901> : `Tracking `' + "``" +'\n' : '<:OFF:978364973065580604> : `Tracking no one`\n';
+
+		const infoDesc = statusDesc + channelsDesc + trackingDesc
 
 		await interaction.reply({
 			embeds: [new MessageEmbed()
@@ -17,7 +22,8 @@ module.exports = {
 			.setDescription(desc)
 			.setColor("#ce412b")
 			.addFields(
-				{name: 'Commands', value: commandsDecs }
+				{name: 'Commands', value: commandsDesc },
+				{name: 'Server Info', value: infoDesc }
 			)
         ], ephemeral: true,
 		})
