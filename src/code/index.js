@@ -3,6 +3,10 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { TOKEN } = require('./info.js');
 const fs = require('node:fs');
+const Database = require("./config/database.js")
+
+// Initialize database
+const db = Database();
 
 // Load slashcommands if you provide load as an arguments: "node ./index.js load"
 const LOAD_SLASH = process.argv[2] == "load"
@@ -44,6 +48,8 @@ if (LOAD_SLASH) {
 else {
 	client.on("ready", () => {
         console.log(`Logged in as ${client.user.tag}`)
+        // Connecting to the database
+        db.connect()
     })
 	// Catch the command interaction
     client.on("interactionCreate", (interaction) => {

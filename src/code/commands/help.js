@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
 const { MessageEmbed } = require("discord.js")
+const GuildInfo = require("../models/GuildInfo")
 
 module.exports = {
 	data: new SlashCommandBuilder().setName("help").setDescription("Shows information about the commands"),
@@ -8,26 +9,43 @@ module.exports = {
 		// Create the embed
 		const embed = new MessageEmbed()
 
-		const sentData = { guildId: interaction.guildId.toString() }
-		const receivedData = getFromDb(sentData)
-		const channel = interaction.guild.channels.cache.get(parseInt(receivedData.channelId))
-		if (!channel) {
-			const channelName = receivedData.channelId
-		}
-		else {
-			const channelName = channel.name
-		}
+		GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
+			if (err) {
+				console.error(err)
+				return
+			}
+
+			if (!info) {
+				info = new GuildInfo({
+					guildId: interaction.guildId,
+					channelId: "",
+					tracking: [],
+					status: false,
+				})
+
+				info.save(err => {
+					if (err) {
+						console.error(err)
+						return
+					}
+				})
+			}
+		})
+
+		// TODO: MAKE THE CALLBACK SHIT WORK
+
+		const channel = interaction.guild.channels.cache.get()
+		const channelName = channel ? channel.name : 
 		
-		const tracking = receivedData.tracking.join(", ")
-		console.log(receivedData)
+		const tracking = .tracking.join(", ")
 		console.log(channel)
 		console.log(tracking)
 
 		const desc = `This bot is an unofficial bot that posts rust\n bans from the Rust Hack Report twitter account`
 		const commandsDesc = '`/help`	Displays this message\n`/channel`	Set the channel to send bans\n`/status`   Turn the bans ON or OFF\n`/track`   Get alerted when a spesific player gets banned'
-		let statusDesc = receivedData.status ? '<:ON:978364950340853901> : `Status ON`\n' : '<:OFF:978364973065580604> : `Status OFF`\n';
-		let channelsDesc = receivedData.channelId ? '<:ON:978364950340853901> : `Channel ' + channelName +'`\n' : '<:OFF:978364973065580604> : `No channel set`\n';
-		let trackingDesc = receivedData.tracking !== [] ? '<:ON:978364950340853901> : `Tracking ' + tracking +'`\n' : '<:OFF:978364973065580604> : `Tracking no one`\n';
+		let statusDesc = .status ? '<:ON:978364950340853901> : `Status ON`\n' : '<:OFF:978364973065580604> : `Status OFF`\n';
+		let channelsDesc = .channelId ? '<:ON:978364950340853901> : `Channel ' + channelName +'`\n' : '<:OFF:978364973065580604> : `No channel set`\n';
+		let trackingDesc = .tracking !== [] ? '<:ON:978364950340853901> : `Tracking ' + tracking +'`\n' : '<:OFF:978364973065580604> : `Tracking no one`\n';
 
 		// Combine the descriptions
 		const infoDesc = statusDesc + channelsDesc + trackingDesc
