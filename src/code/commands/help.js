@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
 const { MessageEmbed } = require("discord.js")
-const { getFromDb } = require("../utility.js")
 
 module.exports = {
 	data: new SlashCommandBuilder().setName("help").setDescription("Shows information about the commands"),
