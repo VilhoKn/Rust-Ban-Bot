@@ -37,7 +37,7 @@ module.exports = {
 			const tracking = info.tracking.join(", ")
 
 			const desc = `This bot is an unofficial bot that posts rust\n bans from the Rust Hack Report twitter account`
-			const commandsDesc = '`/help`	Displays this message\n`/channel`	Set the channel to send bans\n`/status`   Turn the bans ON or OFF\n`/track`   Get alerted when a spesific player gets banned'
+			const commandsDesc = '`/help`	Displays this message\n`/channel`	Set the channel to send bans\n(to unset, use "remove" argument set to "ON")\n`/status`   Turn the bans ON or OFF\n`/track`   Get alerted when a spesific player gets banned'
 			let statusDesc = info.status ? '<:ON:978364950340853901> : `Status ON`\n' : '<:OFF:978364973065580604> : `Status OFF`\n';
 			let channelsDesc = info.channelId ? '<:ON:978364950340853901> : `Channel ' + channelName +'`\n' : '<:OFF:978364973065580604> : `No channel set`\n';
 			let trackingDesc = info.tracking.length !== 0 ? '<:ON:978364950340853901> : `Tracking ' + tracking +'`\n' : '<:OFF:978364973065580604> : `Tracking no one`\n';
