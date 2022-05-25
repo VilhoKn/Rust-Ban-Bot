@@ -9,7 +9,7 @@ module.exports = {
 		// Create the embed
 		const embed = new MessageEmbed()
 
-		const promise = GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
+		GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
 			if (err) {
 				console.error(err)
 				return
@@ -30,15 +30,11 @@ module.exports = {
 					}
 				})
 			}
-		
-			console.log(info)
 
 			const channel = interaction.guild.channels.cache.get(info.guildId)
 			const channelName = channel ? channel.name : info.guildId
 			
 			const tracking = info.tracking.join(", ")
-
-			console.log(info.tracking.length, typeof info.tracking)
 
 			const desc = `This bot is an unofficial bot that posts rust\n bans from the Rust Hack Report twitter account`
 			const commandsDesc = '`/help`	Displays this message\n`/channel`	Set the channel to send bans\n`/status`   Turn the bans ON or OFF\n`/track`   Get alerted when a spesific player gets banned'
