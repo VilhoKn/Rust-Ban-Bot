@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const Database = require("./config/database.js")
 
 // Initialize database
-const db = Database();
+const db = new Database();
 
 // Load slashcommands if you provide load as an arguments: "node ./index.js load"
 const LOAD_SLASH = process.argv[2] == "load"
