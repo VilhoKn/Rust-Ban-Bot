@@ -55,7 +55,7 @@ module.exports = {
 			})
 
 			// Prepare the variables to show in the embed
-			const channel = interaction.guild.channels.cache.get(info.guildId)
+			const channel = client.channels.cache.get(info.channelId)
 			const channelName = channel ? channel.name : info.guildId
 			const tracking = info.tracking.join(", ")
 

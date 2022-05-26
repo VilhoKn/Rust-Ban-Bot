@@ -56,7 +56,7 @@ module.exports = {
 			})
 
 			// Prepare the variables to show in the embed
-			let channel = client.channels.cache.get(info.channelId)
+			const channel = client.channels.cache.get(info.channelId)
 			const channelName = channel ? channel.name : info.channelId
 			const tracking = info.tracking.join(", ")
 

@@ -1,9 +1,94 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
 const { MessageEmbed } = require("discord.js")
+const GuildInfo = require("../models/GuildInfo")
 
 module.exports = {
-	data: new SlashCommandBuilder().setName("track").setDescription("template"),
+	data: new SlashCommandBuilder().setName("track").setDescription("Set people to track for bans")
+			.addSubcommand(sc => sc
+				.setName("add")
+				.setDescription("Add people to the tracking list")
+				.addStringOption(option => option
+					.setRequired(true)
+					.setName("name")
+					.setDescription("The name to track")))
+			.addSubcommand(sc => sc
+				.setName("remove")
+				.setDescription("Remove people or all the people from the tracking list")
+				.addStringOption(option => option
+					.setName("name")
+					.setDescription("The name to remove")
+					.setRequired(true))),
 	run: async ({ client, interaction }) => {
-		
+
+		// Create the embed
+		const embed = new MessageEmbed()
+
+		// Get the selected name
+		const choice = interaction.options.getString("name");
+
+		// Try finding the guild id in the database
+		GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
+			// Output the possible error
+			if (err) {
+				console.error(err)
+				return
+			}
+	
+			// If the guild isn't in the database, make a new instance
+			if (!info) {
+				info = new GuildInfo({
+					guildId: interaction.guildId,
+					channelId: "",
+					tracking: new Array,
+					status: false,
+				})
+			}
+
+			if (interaction.options.getSubcommand() === "add") {
+				info.tracking.push(choice)
+			}
+			else if (interaction.options.getSubcommand() === "remove" && choice.toLower() !== "all") {
+				const index = info.tracking.indexOf(choice)
+				if (index !== -1) {
+					info.tracking.splice(index, 1)
+				}
+			}
+			else if (interaction.options.getSubcommand() === "remove" && choice.toLower() === "all") {
+				info.tracking = []
+			}
+
+			info.save(err => {
+				if (err) {
+					console.error(err)
+					return
+				}
+			})
+
+			// Prepare the values to show in the embed
+			const channel = client.channels.cache.get(info.channelId)
+			const channelName = channel ? channel.name : info.guildId
+			const tracking = info.tracking.join(", ")
+
+			// Prepare the descriptions
+			const desc = `Removed the name from tracking`
+			let statusDesc = info.status ? '<:ON:978364950340853901> : `Status ON`\n' : '<:OFF:978364973065580604> : `Status OFF`\n';
+			let channelsDesc = info.channelId ? '<:ON:978364950340853901> : `Channel ' + channelName +'`\n' : '<:OFF:978364973065580604> : `No channel set`\n';
+			let trackingDesc = info.tracking.length !== 0 ? '<:ON:978364950340853901> : `Tracking ' + tracking +'`\n' : '<:OFF:978364973065580604> : `Tracking no one`\n';
+
+			// Combine the descriptions
+			const infoDesc = statusDesc + channelsDesc + trackingDesc
+
+			// Configuring the embed
+			interaction.reply({
+				embeds: [embed
+				.setTitle("Server tracking changed")
+				.setDescription(desc)
+				.setColor("#ce412b")
+				.addFields(
+					{name: 'Server Info', value: infoDesc },
+				)
+			], ephemeral: true,
+			})
+		})
 	},
 }
