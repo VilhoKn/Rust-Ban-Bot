@@ -44,6 +44,10 @@ module.exports = {
 				})
 			}
 
+			// Initialize a variable to indicate if on remove the name was found
+			let notFound = false;
+
+
 			if (interaction.options.getSubcommand() === "add") {
 				info.tracking.push(choice)
 			}
@@ -51,6 +55,9 @@ module.exports = {
 				const index = info.tracking.indexOf(choice)
 				if (index !== -1) {
 					info.tracking.splice(index, 1)
+				}
+				else {
+					notFound = true;
 				}
 			}
 			else if (interaction.options.getSubcommand() === "remove" && choice.toLowerCase() === "all") {
@@ -70,7 +77,8 @@ module.exports = {
 			const tracking = info.tracking.join(", ")
 
 			// Prepare the descriptions
-			const desc = `Removed the name from tracking`
+			const title = notFound ? "Server tracking unchanged" : "Server tracking changed"
+			const desc = notFound ? "Name was not found in the tracking list" : "Removed the name from tracking"
 			let statusDesc = info.status ? '<:ON:978364950340853901> : `Status ON`\n' : '<:OFF:978364973065580604> : `Status OFF`\n';
 			let channelsDesc = info.channelId ? '<:ON:978364950340853901> : `Channel ' + channelName +'`\n' : '<:OFF:978364973065580604> : `No channel set`\n';
 			let trackingDesc = info.tracking.length !== 0 ? '<:ON:978364950340853901> : `Tracking ' + tracking +'`\n' : '<:OFF:978364973065580604> : `Tracking no one`\n';
@@ -81,7 +89,7 @@ module.exports = {
 			// Configuring the embed
 			interaction.reply({
 				embeds: [embed
-				.setTitle("Server tracking changed")
+				.setTitle(title)
 				.setDescription(desc)
 				.setColor("#ce412b")
 				.addFields(
