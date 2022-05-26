@@ -47,13 +47,13 @@ module.exports = {
 			if (interaction.options.getSubcommand() === "add") {
 				info.tracking.push(choice)
 			}
-			else if (interaction.options.getSubcommand() === "remove" && choice.toLower() !== "all") {
+			else if (interaction.options.getSubcommand() === "remove" && choice.toLowerCase() !== "all") {
 				const index = info.tracking.indexOf(choice)
 				if (index !== -1) {
 					info.tracking.splice(index, 1)
 				}
 			}
-			else if (interaction.options.getSubcommand() === "remove" && choice.toLower() === "all") {
+			else if (interaction.options.getSubcommand() === "remove" && choice.toLowerCase() === "all") {
 				info.tracking = []
 			}
 
