@@ -71,8 +71,7 @@ module.exports = {
 			// Configuring the embed
 			interaction.reply({
 				embeds: [embed
-				.setThumbnail("https://pbs.twimg.com/profile_images/596978050559971328/Q9bkwxam_200x200.png")
-				.setTitle("Rust Ban Bot")
+				.setTitle("Server status changed")
 				.setDescription(desc)
 				.setColor("#ce412b")
 				.addFields(
