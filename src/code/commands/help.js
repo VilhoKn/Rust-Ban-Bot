@@ -9,12 +9,15 @@ module.exports = {
 		// Create the embed
 		const embed = new MessageEmbed()
 
+		// Try finding the guild id in the database
 		GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
+			// Output the possible error
 			if (err) {
 				console.error(err)
 				return
 			}
 	
+			// If the guild isn't in the database, make a new instance
 			if (!info) {
 				info = new GuildInfo({
 					guildId: interaction.guildId,
@@ -31,6 +34,7 @@ module.exports = {
 				})
 			}
 
+			
 			const channel = interaction.guild.channels.cache.get(info.guildId)
 			const channelName = channel ? channel.name : info.guildId
 			
