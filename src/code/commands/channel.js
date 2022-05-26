@@ -4,17 +4,16 @@ const GuildInfo = require("../models/GuildInfo")
 
 module.exports = {
 	data: new SlashCommandBuilder().setName("channel").setDescription("Set the ban channel")
-			.addChannelOption(option =>
-			option.setName('channel')
-			.setDescription('The channel to send the bans')
-			.setRequired(true))
-			.addStringOption(option =>
-			option.setName('remove')
-			.setDescription('Set this is you want to remove the channel')
-			.addChoices({
-				'name': 'ON',
-				'value': 'ON'
-			})),
+			.addSubcommand(sc => sc
+				.setName("change")
+				.setDescription("Set the ban channel")
+				.addChannelOption(option =>
+					option.setName('channel')
+					.setDescription('The channel to send the bans')
+					.setRequired(true)))
+			.addSubcommand(sc => sc
+				.setName("remove")
+				.setDescription("Remove the channel")),
 	run: async ({ client, interaction }) => {
 
 		// Create the embed
@@ -24,7 +23,7 @@ module.exports = {
 		const choice = interaction.options.getChannel("channel");
 
 		// Get if the user wants to unset the channel
-		const remove = interaction.options.getString("remove") === "ON"
+		const remove = interaction.options.getSubcommand() === "remove"
 
 		// Try finding the guild id in the database
 		GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
@@ -45,7 +44,7 @@ module.exports = {
 			}
 			
 			// Set the channel id to the new channel id
-			// If remove was set to "ON" set it to ""
+			// If remove subcommand was used, set it to ""
 			info.channelId = remove === false ? choice.id : "";
 
 			// Save to the database
