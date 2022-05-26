@@ -18,18 +18,22 @@ module.exports = {
 			})),
 	run: async ({ client, interaction }) => {
 
+		// Create the embed
 		const embed = new MessageEmbed()
 
+		// Turning the choice in to a boolean
 		const choice = interaction.options.getString("mode");
+		const status = choice === "ON"
 
-		const status = choice === "ON" ? true : false;
-
+		// Try finding the guild id in the database
 		GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
+			// Output the possible error
 			if (err) {
 				console.error(err)
 				return
 			}
 	
+			// If the guild isn't in the database, make a new instance
 			if (!info) {
 				info = new GuildInfo({
 					guildId: interaction.guildId,
@@ -39,8 +43,10 @@ module.exports = {
 				})
 			}
 			
+			// Set the status to the new status
 			info.status = status;
 
+			// Save to the database
 			info.save(err => {
 				if (err) {
 					console.error(err)
@@ -48,11 +54,12 @@ module.exports = {
 				}
 			})
 
+			// Prepare the variables to show in the embed
 			const channel = interaction.guild.channels.cache.get(info.guildId)
 			const channelName = channel ? channel.name : info.guildId
-			
 			const tracking = info.tracking.join(", ")
 
+			// Prepare the descriptions
 			const desc = `Server status set to ${choice}`
 			let statusDesc = status ? '<:ON:978364950340853901> : `Status ON`\n' : '<:OFF:978364973065580604> : `Status OFF`\n';
 			let channelsDesc = info.channelId ? '<:ON:978364950340853901> : `Channel ' + channelName +'`\n' : '<:OFF:978364973065580604> : `No channel set`\n';

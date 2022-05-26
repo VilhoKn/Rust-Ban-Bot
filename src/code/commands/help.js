@@ -34,12 +34,12 @@ module.exports = {
 				})
 			}
 
-			
+			// Prepare the values to show in the embed
 			const channel = interaction.guild.channels.cache.get(info.guildId)
 			const channelName = channel ? channel.name : info.guildId
-			
 			const tracking = info.tracking.join(", ")
 
+			// Prepare the descriptions
 			const desc = `This bot is an unofficial bot that posts rust\n bans from the Rust Hack Report twitter account`
 			const commandsDesc = '`/help`	Displays this message\n`/channel`	Set the channel to send bans\n(to unset, use "remove" argument set to "ON")\n`/status`   Turn the bans ON or OFF\n`/track`   Get alerted when a spesific player gets banned'
 			let statusDesc = info.status ? '<:ON:978364950340853901> : `Status ON`\n' : '<:OFF:978364973065580604> : `Status OFF`\n';

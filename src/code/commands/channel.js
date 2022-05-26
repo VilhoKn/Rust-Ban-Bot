@@ -17,17 +17,24 @@ module.exports = {
 			})),
 	run: async ({ client, interaction }) => {
 
+		// Create the embed
 		const embed = new MessageEmbed()
 
+		// Get the selected channel
 		const choice = interaction.options.getChannel("channel");
-		const remove = interaction.options.getString("remove") === "ON" ? true : false
 
+		// Get if the user wants to unset the channel
+		const remove = interaction.options.getString("remove") === "ON"
+
+		// Try finding the guild id in the database
 		GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
+			// Output the possible error
 			if (err) {
 				console.error(err)
 				return
 			}
 	
+			// If the guild isn't in the database, make a new instance
 			if (!info) {
 				info = new GuildInfo({
 					guildId: interaction.guildId,
@@ -37,9 +44,11 @@ module.exports = {
 				})
 			}
 			
-
+			// Set the channel id to the new channel id
+			// If remove was set to "ON" set it to ""
 			info.channelId = remove === false ? choice.id : "";
 
+			// Save to the database
 			info.save(err => {
 				if (err) {
 					console.error(err)
@@ -47,12 +56,12 @@ module.exports = {
 				}
 			})
 
+			// Prepare the variables to show in the embed
 			let channel = client.channels.cache.get(info.channelId)
-
 			const channelName = channel ? channel.name : info.channelId
-			
 			const tracking = info.tracking.join(", ")
 
+			// Prepare the descriptions
 			const desc = remove === false ? `Ban channel set to ${channel}` : "Removed channel"
 			let statusDesc = info.status ? '<:ON:978364950340853901> : `Status ON`\n' : '<:OFF:978364973065580604> : `Status OFF`\n';
 			let channelsDesc = info.channelId ? '<:ON:978364950340853901> : `Channel ' + channelName +'`\n' : '<:OFF:978364973065580604> : `No channel set`\n';
