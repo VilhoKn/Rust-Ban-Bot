@@ -69,5 +69,3 @@ else if (require.main === module) {
 	// Start the bot
     client.login(TOKEN)
 }
-
-module.exports = client

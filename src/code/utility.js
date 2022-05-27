@@ -1,6 +1,5 @@
 const needle = require('needle')
 const { BEARER } = require("./info.js")
-const client = require("./index")
 const GuildInfo = require("./models/GuildInfo")
 
 const rulesURL = 'https://api.twitter.com/2/tweets/search/stream/rules'
