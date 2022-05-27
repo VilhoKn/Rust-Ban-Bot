@@ -40,6 +40,11 @@ module.exports = {
 					channelId: "",
 					tracking: new Array,
 					status: false,
+					webhook: {
+						id: "",
+						token: "",
+						url: "",
+					},
 				})
 			}
 			

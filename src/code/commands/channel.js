@@ -40,12 +40,44 @@ module.exports = {
 					channelId: "",
 					tracking: new Array,
 					status: false,
+					webhook: {
+						id: "",
+						token: "",
+						url: "",
+					},
 				})
 			}
 			
 			// Set the channel id to the new channel id
 			// If remove subcommand was used, set it to ""
 			info.channelId = remove === false ? choice.id : "";
+
+			if (info.webhook.url) {
+				client.fetchWebhook(info.id, info.token).then(w => {
+					if (remove) {
+						w.delete()
+						info.webhook.id = ""
+						info.webhook.token = ""
+						info.webhook.url = ""
+					}
+					else {
+						w.edit({
+							channel: info.channelId
+						})
+					}
+				})
+			}
+
+			if (!info.webhook.url) {
+				choice.createWebhook("Rust Hack Report", {
+					avatar: "https://pbs.twimg.com/profile_images/596978050559971328/Q9bkwxam_200x200.png"
+				}).then(w => {
+						info.webhook.id = w.id
+						info.webhook.token = w.token
+						info.webhook.url = w.url
+					})
+			}
+
 
 			// Save to the database
 			info.save(err => {
