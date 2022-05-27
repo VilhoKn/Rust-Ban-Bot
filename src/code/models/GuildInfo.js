@@ -5,6 +5,7 @@ const GuildInfoSchema = new mongoose.Schema({
     channelId: String,
     tracking: Array,
     status: Boolean,
+	webhookUrl: String,
 })
 
 module.exports = mongoose.model("GuildInfo", GuildInfoSchema)

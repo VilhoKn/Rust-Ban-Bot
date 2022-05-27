@@ -49,7 +49,7 @@ module.exports = {
 
 
 			if (interaction.options.getSubcommand() === "add") {
-				info.tracking.push(choice)
+				info.tracking.push(choice.toLowerCase())
 			}
 			else if (interaction.options.getSubcommand() === "remove" && choice.toLowerCase() !== "all") {
 				const index = info.tracking.indexOf(choice)

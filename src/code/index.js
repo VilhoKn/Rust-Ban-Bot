@@ -1,9 +1,11 @@
 const Discord = require("discord.js")
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
+const { MessageEmbed } = require("discord.js")
 const { TOKEN } = require('./info.js');
 const fs = require('node:fs');
 const Database = require("./config/database.js")
+const GuildInfo = require("./models/GuildInfo")
 
 // Initialize database
 const db = new Database();
@@ -45,7 +47,7 @@ if (LOAD_SLASH) {
         }
     })
 }
-else {
+else if (require.main === module) {
 	client.on("ready", () => {
         console.log(`Logged in as ${client.user.tag}`)
         // Connecting to the database
@@ -67,3 +69,5 @@ else {
 	// Start the bot
     client.login(TOKEN)
 }
+
+module.exports = client
