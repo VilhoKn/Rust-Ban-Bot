@@ -5,7 +5,7 @@ const GuildInfoSchema = new mongoose.Schema({
     channelId: String,
     tracking: Array,
     status: Boolean,
-	webhookUrl: {
+	webhook: {
         id: String,
         token: String,
         url: String,

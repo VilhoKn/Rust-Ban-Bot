@@ -1,9 +1,7 @@
 const needle = require('needle')
 const { BEARER } = require("./info.js")
 const GuildInfo = require("./models/GuildInfo")
-const Database = require("./config/database.js")
-
-const db = new Database()
+const { MessageEmbed, WebhookClient } = require('discord.js')
 
 const rulesURL = 'https://api.twitter.com/2/tweets/search/stream/rules'
 const streamURL = 'https://api.twitter.com/2/tweets/search/stream?tweet.fields=public_metrics&expansions=author_id'
@@ -51,6 +49,7 @@ function sendEmbeds(json) {
 			const text = json.data.text
 			const words = text.split()
 			const name = words.slice(0, -3).join(" ").toLowerCase()
+			console.log(text, words, name)
 
 			const webhookClient = new WebhookClient({ url: info.webhook.url });
 

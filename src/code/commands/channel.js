@@ -53,7 +53,9 @@ module.exports = {
 			info.channelId = remove === false ? choice.id : "";
 
 			if (info.webhook.url) {
+				console.log("found", "")
 				client.fetchWebhook(info.id, info.token).then(w => {
+					console.log("found", w)
 					if (remove) {
 						w.delete()
 						info.webhook.id = ""
@@ -68,17 +70,6 @@ module.exports = {
 				})
 			}
 
-			if (!info.webhook.url) {
-				choice.createWebhook("Rust Hack Report", {
-					avatar: "https://pbs.twimg.com/profile_images/596978050559971328/Q9bkwxam_200x200.png"
-				}).then(w => {
-						info.webhook.id = w.id
-						info.webhook.token = w.token
-						info.webhook.url = w.url
-					})
-			}
-
-
 			// Save to the database
 			info.save(err => {
 				if (err) {
@@ -86,6 +77,27 @@ module.exports = {
 					return
 				}
 			})
+
+			if (!info.webhook.url && remove === false) {
+				const webhook = choice.createWebhook("Rust Hack Report", {
+					avatar: "https://pbs.twimg.com/profile_images/596978050559971328/Q9bkwxam_200x200.png"
+				})
+				webhook.then(webhook => {
+					GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
+						console.log(webhook)
+						info.webhook.id = webhook.id
+						info.webhook.token = webhook.token
+						info.webhook.url = webhook.url
+
+						info.save(err => {
+							if (err) {
+								console.error(err)
+								return
+							}
+						})
+					})
+				})
+			}
 
 			// Prepare the variables to show in the embed
 			const channel = client.channels.cache.get(info.channelId)
