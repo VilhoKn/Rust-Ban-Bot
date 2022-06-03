@@ -29,7 +29,7 @@ module.exports = {
 		GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
 			// Output the possible error
 			if (err) {
-				console.error(err)
+				console.log(err)
 				return
 			}
 	
@@ -47,33 +47,42 @@ module.exports = {
 					},
 				})
 			}
-			
-			// Set the channel id to the new channel id
-			// If remove subcommand was used, set it to ""
-			info.channelId = remove === false ? choice.id : "";
 
+			info.channelId = remove === false ? choice.id : ""
+			
 			if (info.webhook.url) {
-				console.log("found", "")
-				client.fetchWebhook(info.id, info.token).then(w => {
-					console.log("found", w)
-					if (remove) {
-						w.delete()
-						info.webhook.id = ""
-						info.webhook.token = ""
-						info.webhook.url = ""
-					}
-					else {
-						w.edit({
-							channel: info.channelId
-						})
-					}
-				})
+				try {
+					client.fetchWebhook(info.webhook.id).then(w => {
+						if (remove) {
+							w.delete().catch()
+						}
+						else {
+							w.edit({
+								channel: info.channelId
+							}).catch(err => {console.log("err", err)})
+						}
+					}).catch(err => {
+						console.log(err)
+					} )
+				}
+				catch(err) {
+					console.log(err)
+				}
+			}
+
+			// Set the channel id to the new channel id
+			if (remove === true) {
+				//info.channelId = ""
+				info.webhook = {id: "", token: "", url: ""}
+			}
+			else {
+				//info.channelId = choice.id
 			}
 
 			// Save to the database
 			info.save(err => {
 				if (err) {
-					console.error(err)
+					console.log(err)
 					return
 				}
 			})
@@ -84,14 +93,11 @@ module.exports = {
 				})
 				webhook.then(webhook => {
 					GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
-						console.log(webhook)
-						info.webhook.id = webhook.id
-						info.webhook.token = webhook.token
-						info.webhook.url = webhook.url
+						info.webhook = { id: webhook.id, token: webhook.token, url: webhook.url }
 
 						info.save(err => {
 							if (err) {
-								console.error(err)
+								console.log(err)
 								return
 							}
 						})

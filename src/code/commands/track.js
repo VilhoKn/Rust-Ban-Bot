@@ -30,7 +30,7 @@ module.exports = {
 		GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
 			// Output the possible error
 			if (err) {
-				console.error(err)
+				console.log(err)
 				return
 			}
 	
@@ -71,7 +71,7 @@ module.exports = {
 
 			info.save(err => {
 				if (err) {
-					console.error(err)
+					console.log(err)
 					return
 				}
 			})
