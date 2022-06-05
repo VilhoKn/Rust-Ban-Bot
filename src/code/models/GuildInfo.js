@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 
+// Configure the schema
 const GuildInfoSchema = new mongoose.Schema({
     guildId: String,
     channelId: String,

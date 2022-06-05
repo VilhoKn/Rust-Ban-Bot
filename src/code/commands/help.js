@@ -31,6 +31,7 @@ module.exports = {
 					},
 				})
 
+				// Save to the database
 				info.save(err => {
 					if (err) {
 						console.log(err)

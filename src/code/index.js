@@ -10,7 +10,7 @@ const GuildInfo = require("./models/GuildInfo")
 // Initialize database
 const db = new Database();
 
-// Load slashcommands if you provide load as an arguments: "node ./index.js load"
+// Load slashcommands if you provide load as an argument: "node ./index.js load"
 const LOAD_SLASH = process.argv[2] == "load"
 
 // Store the commands and command files in lists
@@ -34,7 +34,9 @@ for (const file of commandFiles) {
 if (LOAD_SLASH) {
 	// Refresh the slashcommands
     const rest = new REST({ version: "9" }).setToken(TOKEN)
+
     console.log("Started refreshing application (/) commands.")
+
     rest.put(Routes.applicationGuildCommands(CLIENT_ID, "900712260937322526"), {body: commands})
     .then(() => {
         console.log("Successfully reloaded application (/) commands.")
@@ -50,7 +52,8 @@ if (LOAD_SLASH) {
 else if (require.main === module) {
 	client.on("ready", () => {
         console.log(`Logged in as ${client.user.tag}`)
-        // Connecting to the database
+        
+        // Connect to the database
         db.connect()
     })
 	// Catch the command interaction
@@ -58,6 +61,7 @@ else if (require.main === module) {
         async function handleCommand() {
             if (!interaction.isCommand()) return
 
+            // Get the command name and check if its a valid slash command
             const command = client.slashcommands.get(interaction.commandName)
             if (!command) interaction.reply("Not a valid slash command")
 

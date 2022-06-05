@@ -52,7 +52,7 @@ module.exports = {
 			// Initialize a variable to indicate if on remove the name was found
 			let notFound = false;
 
-
+			// Change the tracking array depending on the subcommands
 			if (interaction.options.getSubcommand() === "add") {
 				info.tracking.push(choice.toLowerCase())
 			}
@@ -62,6 +62,7 @@ module.exports = {
 					info.tracking.splice(index, 1)
 				}
 				else {
+					// If the name was not found in the array, indicate that with notFound
 					notFound = true;
 				}
 			}
@@ -69,6 +70,7 @@ module.exports = {
 				info.tracking = []
 			}
 
+			// Save to the database
 			info.save(err => {
 				if (err) {
 					console.log(err)
@@ -82,6 +84,7 @@ module.exports = {
 			const tracking = info.tracking.join(", ")
 
 			// Prepare the descriptions
+			// Change the descriptions depending if the name was found
 			const title = notFound ? "Server tracking unchanged" : "Server tracking changed"
 			const desc = notFound ? "Name was not found in the tracking list" : "Removed the name from tracking"
 			let statusDesc = info.status ? '<:ON:978364950340853901> : `Status ON`\n' : '<:OFF:978364973065580604> : `Status OFF`\n';

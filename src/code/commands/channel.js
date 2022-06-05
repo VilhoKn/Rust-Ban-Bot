@@ -48,11 +48,17 @@ module.exports = {
 				})
 			}
 
+			// Set the channelId to the new one, this needs
+			// to be done before the editing of the webook
 			info.channelId = remove === false ? choice.id : ""
 			
+			// If there already is a webhook
 			if (info.webhook.url) {
 				try {
+					// Fetch the webook
 					client.fetchWebhook(info.webhook.id).then(w => {
+						// Depending on the subcommand, delete or change
+						// the info of the webhook
 						if (remove) {
 							w.delete().catch()
 						}
@@ -70,13 +76,10 @@ module.exports = {
 				}
 			}
 
-			// Set the channel id to the new channel id
+			// Reset the stored webhook data, this needs 
+			// to be done after the deletion of the webhook
 			if (remove === true) {
-				//info.channelId = ""
 				info.webhook = {id: "", token: "", url: ""}
-			}
-			else {
-				//info.channelId = choice.id
 			}
 
 			// Save to the database
@@ -87,14 +90,20 @@ module.exports = {
 				}
 			})
 
+			// If there isn't already a webhook
 			if (!info.webhook.url && remove === false) {
+				// Create the new webhook
 				const webhook = choice.createWebhook("Rust Hack Report", {
 					avatar: "https://pbs.twimg.com/profile_images/596978050559971328/Q9bkwxam_200x200.png"
 				})
+
 				webhook.then(webhook => {
+					// Find the guild info again to save
 					GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
+						// Configure the new webhook
 						info.webhook = { id: webhook.id, token: webhook.token, url: webhook.url }
 
+						// Save to the database
 						info.save(err => {
 							if (err) {
 								console.log(err)
