@@ -4,7 +4,7 @@ const GuildInfo = require("./models/GuildInfo")
 const { MessageEmbed, WebhookClient } = require('discord.js')
 
 const rulesURL = 'https://api.twitter.com/2/tweets/search/stream/rules'
-const streamURL = 'https://api.twitter.com/2/tweets/search/stream?tweet.fields=public_metrics&expansions=author_id'
+const streamURL = 'https://api.twitter.com/2/tweets/search/stream'
 
 // Configure the rules
 const rules = [{ value: 'from:rusthackreport' }]
@@ -52,7 +52,7 @@ function streamTweets() {
 			console.log("json", json)
 
 			sendEmbeds(json)
-    	} catch (error) {}
+    	} catch (err) {console.log("err", err)}
 	})
 }
 
@@ -83,14 +83,13 @@ function sendEmbeds(json) {
 			console.log("webhookClient", webhookClient)
 
 			// If the person is tracked, send a special message
-			if (tracking.includes(name)) {
-				webhookClient.send(embeds[new MessageEmbed()
+			if (info.tracking.includes(name)) {
+				webhookClient.send({embeds: [new MessageEmbed()
 					.setTitle(`${name} was banned | Tracking ended`)
 					.setDescription(text)
 					.setColor("#3bed44")
 					.setTimestamp()
-					.setFooter({ text: 'Rust Hack Report', iconURL: 'https://pbs.twimg.com/profile_images/596978050559971328/Q9bkwxam_200x200.png' })
-				])
+				]})
 
 				// Remove the person from the tracking
 				const index = info.tracking.indexOf(name)
@@ -109,14 +108,13 @@ function sendEmbeds(json) {
 
 			// If they have status on, send them the normal embed
 			else if (info.status) {
-				webhookClient.send(embeds[new MessageEmbed()
+				webhookClient.send({embeds:[new MessageEmbed()
 					.setTitle(`${name} was banned`)
 					.setDescription(text)
 					.setColor("#ce412b")
 					.setTimestamp()
-				])
+				]})
 			}
-		
 		}
 	})
 }
