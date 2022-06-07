@@ -2,7 +2,12 @@ const needle = require('needle')
 const { BEARER } = require("./info.js")
 const GuildInfo = require("./models/GuildInfo")
 const { MessageEmbed, WebhookClient } = require('discord.js')
+const Database = require("./config/database.js")
 
+// Initialize database
+const db = new Database();
+
+// Set the urls
 const rulesURL = 'https://api.twitter.com/2/tweets/search/stream/rules'
 const streamURL = 'https://api.twitter.com/2/tweets/search/stream'
 
@@ -34,6 +39,10 @@ async function setRules() {
 
 function streamTweets() {
 
+	// Connect to the database
+	db.connect()
+	console.log("Connected to the database")
+
 	console.log("Streaming tweets...")
 
 	// Opening the stream
@@ -46,8 +55,6 @@ function streamTweets() {
 	// When a new tweet gets posted, send the embeds
 	stream.on('data', (data) => {
     	try {
-			console.log("raw data", data)
-
     		const json = JSON.parse(data)
 			console.log("json", json)
 
@@ -63,24 +70,17 @@ function sendEmbeds(json) {
 	// Find all guilds with a ban channel set
 	GuildInfo.find({ channelId: { $ne: "" } }, (err, infos) => {
 
-		console.log("infos", infos)
-
 		// Loop over the guilds
 		for (let i = 0; i < infos.length; i++) {
 			const info = infos[i]
-		
-			console.log("info", info)
 
 			// Separate some data from the text
 			const text = json.data.text
-			const words = text.split()
+			const words = text.split(" ")
 			const name = words.slice(0, -3).join(" ").toLowerCase()
-			console.log(text, words, name)
 
 			// Make a new instance of the webhook client
 			const webhookClient = new WebhookClient({ url: info.webhook.url });
-
-			console.log("webhookClient", webhookClient)
 
 			// If the person is tracked, send a special message
 			if (info.tracking.includes(name)) {
