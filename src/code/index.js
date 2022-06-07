@@ -70,7 +70,7 @@ else if (require.main === module) {
 
             if (adminCommands.includes(interaction.commandName) &&
              !interaction.member.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
-                return interaction.reply(":x: This command needs `manageChannels` permission")
+                return interaction.reply({content: ":x: This command needs `Manage Channels` permission", ephemeral: true})
             }
 
             await command.run({ client, interaction })
