@@ -1,7 +1,7 @@
 const Discord = require("discord.js")
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { MessageEmbed } = require("discord.js")
+const { MessageEmbed, Permissions } = require("discord.js")
 const { TOKEN } = require('./info.js');
 const fs = require('node:fs');
 const Database = require("./config/database.js")
@@ -16,6 +16,9 @@ const LOAD_SLASH = process.argv[2] == "load"
 // Store the commands and command files in lists
 const commands = [];
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+// Admin commands
+const adminCommands = ["status", "track", "channel"]
 
 // Setup the client
 const CLIENT_ID = '978298230196568114';
@@ -64,6 +67,11 @@ else if (require.main === module) {
             // Get the command name and check if its a valid slash command
             const command = client.slashcommands.get(interaction.commandName)
             if (!command) interaction.reply("Not a valid slash command")
+
+            if (adminCommands.includes(interaction.commandName) &&
+             !interaction.member.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+                return interaction.reply(":x: This command needs `manageChannels` permission")
+            }
 
             await command.run({ client, interaction })
         }
