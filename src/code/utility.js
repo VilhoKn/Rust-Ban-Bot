@@ -56,10 +56,10 @@ function streamTweets() {
 	stream.on('data', (data) => {
     	try {
     		const json = JSON.parse(data)
-			console.log("json", json)
+			console.log("Response data:", json)
 
 			sendEmbeds(json)
-    	} catch (err) {console.log("err", err)}
+    	} catch (err) {}
 	})
 }
 
