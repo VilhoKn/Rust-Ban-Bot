@@ -82,20 +82,26 @@ function sendEmbeds(json) {
 			// Make a new instance of the webhook client
 			const webhookClient = new WebhookClient({ url: info.webhook.url });
 
-			// If the person is tracked, send a special message
-			if (info.tracking.includes(name)) {
+			// If the person is tracked, send a special message and remove from tracking
+
+			let found = false
+			for (i=0; i<info.tracking.length; i++) {
+				if (info.tracking[i].name === name) {
+					const userId = info.tracking[i].userId
+					info.tracking.splice(i, 1)
+					found = true
+					break;
+				}
+			}
+
+			if (found) {
 				webhookClient.send({embeds: [new MessageEmbed()
 					.setTitle(`${name} was banned | Tracking ended`)
 					.setDescription(text)
 					.setColor("#3bed44")
 					.setTimestamp()
+					.setFooter({ text: `<@${userId}>` })
 				]})
-
-				// Remove the person from the tracking
-				const index = info.tracking.indexOf(name)
-				if (index !== -1) {
-					info.tracking.splice(index, 1)
-				}
 
 				// Save to the database
 				info.save(err => {

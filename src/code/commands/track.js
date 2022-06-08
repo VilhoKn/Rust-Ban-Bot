@@ -50,20 +50,22 @@ module.exports = {
 			}
 
 			// Initialize a variable to indicate if on remove the name was found
-			let notFound = false;
+			let found = false;
 
 			// Change the tracking array depending on the subcommands
 			if (interaction.options.getSubcommand() === "add") {
-				info.tracking.push(choice.toLowerCase())
+				const name = choice.toLowerCase()
+				const userId = interaction.member.id
+
+				info.tracking.push({ name, userId })
 			}
 			else if (interaction.options.getSubcommand() === "remove" && choice.toLowerCase() !== "all") {
-				const index = info.tracking.indexOf(choice)
-				if (index !== -1) {
-					info.tracking.splice(index, 1)
-				}
-				else {
-					// If the name was not found in the array, indicate that with notFound
-					notFound = true;
+				for (i=0; i<info.tracking.length; i++) {
+					if (info.tracking[i].name === choice.toLowerCase()) {
+						info.tracking.splice(i, 1)
+						found = true
+						break;
+					}
 				}
 			}
 			else if (interaction.options.getSubcommand() === "remove" && choice.toLowerCase() === "all") {
@@ -85,8 +87,8 @@ module.exports = {
 
 			// Prepare the descriptions
 			// Change the descriptions depending if the name was found
-			const title = notFound ? "Server tracking unchanged" : "Server tracking changed"
-			const desc = notFound ? "Name was not found in the tracking list" : "Removed the name from tracking"
+			const title = !found ? "Server tracking unchanged" : "Server tracking changed"
+			const desc = !found ? "Name was not found in the tracking list" : "Removed the name from tracking"
 			let statusDesc = info.status ? '<:ON:978364950340853901> : `Status ON`\n' : '<:OFF:978364973065580604> : `Status OFF`\n';
 			let channelsDesc = info.channelId ? '<:ON:978364950340853901> : `Channel ' + channelName +'`\n' : '<:OFF:978364973065580604> : `No channel set`\n';
 			let trackingDesc = info.tracking.length !== 0 ? '<:ON:978364950340853901> : `Tracking ' + tracking +'`\n' : '<:OFF:978364973065580604> : `Tracking no one`\n';
