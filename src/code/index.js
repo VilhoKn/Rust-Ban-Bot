@@ -40,7 +40,7 @@ if (LOAD_SLASH) {
 
     console.log("Started refreshing application (/) commands.")
 
-    rest.put(Routes.applicationGuildCommands(CLIENT_ID, "900712260937322526"), {body: commands})
+    rest.put(Routes.applicationCommands(CLIENT_ID), {body: commands})
     .then(() => {
         console.log("Successfully reloaded application (/) commands.")
         process.exit(0)
