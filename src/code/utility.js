@@ -96,11 +96,10 @@ function sendEmbeds(json) {
 
 			if (found) {
 				webhookClient.send({embeds: [new MessageEmbed()
-					.setTitle(`${name} was banned | Tracking ended`)
-					.setDescription(text)
+					.setTitle(`${name} was banned`)
+					.setDescription(text + `\n\nTracked by <@${userId}>`)
 					.setColor("#3bed44")
 					.setTimestamp()
-					.setFooter({ text: `<@${userId}>` })
 				]})
 
 				// Save to the database
