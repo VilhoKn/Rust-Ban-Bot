@@ -23,7 +23,13 @@ const adminCommands = ["status", "track", "channel"]
 // Setup the client
 const CLIENT_ID = '978298230196568114';
 const client = new Discord.Client({
-	intents: ["GUILDS"]
+	intents: ["GUILDS"],
+    presence: {
+        activities: [{
+            name: "rust bans",
+            type: "STREAMING",
+        }]
+    }
 })
 
 // Setup the slashcommands

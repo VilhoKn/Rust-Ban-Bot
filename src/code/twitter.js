@@ -83,7 +83,6 @@ function sendEmbeds(json) {
 			const webhookClient = new WebhookClient({ url: info.webhook.url })
 
 			// If the person is tracked, send a special message and remove from tracking
-
 			let found = false
 			for (j=0; j<info.tracking.length; j++) {
 				if (info.tracking[j].name === name) {
