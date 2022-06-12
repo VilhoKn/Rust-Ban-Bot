@@ -80,15 +80,15 @@ function sendEmbeds(json) {
 			const name = words.slice(0, -3).join(" ").toLowerCase()
 
 			// Make a new instance of the webhook client
-			const webhookClient = new WebhookClient({ url: info.webhook.url });
+			const webhookClient = new WebhookClient({ url: info.webhook.url }).catch()
 
 			// If the person is tracked, send a special message and remove from tracking
 
 			let found = false
-			for (i=0; i<info.tracking.length; i++) {
-				if (info.tracking[i].name === name) {
-					const userId = info.tracking[i].userId
-					info.tracking.splice(i, 1)
+			for (j=0; j<info.tracking.length; j++) {
+				if (info.tracking[j].name === name) {
+					const userId = info.tracking[j].userId
+					info.tracking.splice(j, 1)
 					found = true
 					break;
 				}
