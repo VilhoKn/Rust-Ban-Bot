@@ -22,6 +22,9 @@ module.exports = {
 		// Get the selected channel
 		const choice = interaction.options.getChannel("channel");
 
+		if (choice && ["GUILD_VOICE", "GUILD_CATEGORY", "GUILD_STAGE_VOICE", "GUILD_DIRECTORY", "GUILD_FORUM"].includes(choice.type))
+		return interaction.reply({content: ":x: Can't set this channel as the ban channel", ephemeral: true})
+
 		// Get if the user wants to unset the channel
 		const remove = interaction.options.getSubcommand() === "remove"
 
@@ -93,10 +96,16 @@ module.exports = {
 			// If there isn't already a webhook
 			if (!info.webhook.url && remove === false) {
 				// Create the new webhook
-				const webhook = choice.createWebhook("Rust Hack Report", {
-					avatar: "https://pbs.twimg.com/profile_images/596978050559971328/Q9bkwxam_200x200.png"
-				})
-
+				let webhook;
+				try {
+					webhook = choice.createWebhook("Rust Hack Report", {
+						avatar: "https://pbs.twimg.com/profile_images/596978050559971328/Q9bkwxam_200x200.png"
+					})
+				}
+				catch (err) {
+					return interaction.reply({content: ":x: Can't create webhook", ephemeral: true})
+				}
+				
 				webhook.then(webhook => {
 					// Find the guild info again to save
 					GuildInfo.findOne({ guildId: interaction.guildId }, (err, info) => {
@@ -117,7 +126,13 @@ module.exports = {
 			// Prepare the variables to show in the embed
 			const channel = client.channels.cache.get(info.channelId)
 			const channelName = channel ? channel.name : info.channelId
-			const tracking = info.tracking.join(", ")
+
+			// Initialize and populate the tracking
+			let tracking = []
+			for (i=0; i<info.tracking.length; i++) {
+				tracking.push(info.tracking[i].name)
+			}
+			tracking = tracking.join(", ")
 
 			// Prepare the descriptions
 			const desc = remove === false ? `Ban channel set to ${channel}` : "Removed channel"

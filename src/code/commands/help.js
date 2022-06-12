@@ -43,7 +43,13 @@ module.exports = {
 			// Prepare the values to show in the embed
 			const channel = client.channels.cache.get(info.channelId)
 			const channelName = channel ? channel.name : info.guildId
-			const tracking = info.tracking.join(", ")
+			
+			// Initialize and populate the tracking
+			let tracking = []
+			for (i=0; i<info.tracking.length; i++) {
+				tracking.push(info.tracking[i].name)
+			}
+			tracking = tracking.join(", ")
 
 			// Prepare the descriptions
 			const desc = `This bot is an unofficial bot that posts rust\n bans from the Rust Hack Report twitter account`
