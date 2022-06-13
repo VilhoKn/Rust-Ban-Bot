@@ -37,6 +37,17 @@ async function setRules() {
 	return response.body
 }
 
+function openStream() {
+	// Opening the stream
+	const stream = needle.get(streamURL, {
+    	headers: {
+			Authorization: `Bearer ${BEARER}`,
+		},
+	})
+
+	return stream
+}
+
 function streamTweets() {
 
 	// Connect to the database
@@ -45,20 +56,21 @@ function streamTweets() {
 
 	console.log("Streaming tweets...")
 
-	// Opening the stream
-	const stream = needle.get(streamURL, {
-    	headers: {
-			Authorization: `Bearer ${BEARER}`,
-		},
-	})
+	const streamStore = { stream: openStream() }
 
 	// When a new tweet gets posted, send the embeds
-	stream.on('data', (data) => {
+	streamStore.stream.on('data', (data) => {
     	try {
     		const json = JSON.parse(data)
 			console.log("Response data:", json)
 
-			sendEmbeds(json)
+			if (json.errors) {
+				streamStore.stream.request.abort()
+				streamStore.stream = openStream()
+			}
+			else {
+				sendEmbeds(json)
+			}
     	} catch (err) {}
 	})
 }

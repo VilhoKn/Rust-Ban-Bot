@@ -26,8 +26,8 @@ const client = new Discord.Client({
 	intents: ["GUILDS"],
     presence: {
         activities: [{
-            name: "rust bans",
-            type: "STREAMING",
+            name: "to rust bans",
+            type: "LISTENING",
         }]
     }
 })
