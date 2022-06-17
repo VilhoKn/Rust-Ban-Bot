@@ -56,21 +56,14 @@ function streamTweets() {
 
 	console.log("Streaming tweets...")
 
-	const streamStore = { stream: openStream() }
+	const stream = openStream() 
 
 	// When a new tweet gets posted, send the embeds
-	streamStore.stream.on('data', (data) => {
+	stream.on('data', (data) => {
     	try {
     		const json = JSON.parse(data)
 			console.log("Response data:", json)
-
-			if (json.errors) {
-				streamStore.stream.request.abort()
-				streamStore.stream = openStream()
-			}
-			else {
-				sendEmbeds(json)
-			}
+			sendEmbeds(json)
     	} catch (err) {}
 	})
 }
